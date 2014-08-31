@@ -1,6 +1,6 @@
 #include ../config.mk
 
-BIN=gradare${BINSFX}
+BIN=gradare2${BINSFX}
 OBJ=main.o topbar.o toolbar.o actions.o execute.o prefs.o menubar.o dialog.o
 CFLAGS+=-DPREFIX=\"${PREFIX}\" -DGRSCDIR=\"./grsc/\"
 #\"${DATADIR}/radare/gradare\"
@@ -9,13 +9,7 @@ CFLAGS+=-DVERSION=\"0.1\"
 GTK_FLAGS=`pkg-config glib-2.0 gtk+-2.0 vte --cflags`
 GTK_LIBS=`pkg-config glib-2.0 gtk+-2.0 vte --libs`
 LIBS+=${GTK_LIBS} ${VTE_LIBS}
-#CFLAGS+=-D_MAEMO_=${MAEMO}
-#`pkg-config glib-2.0 gtk+-2.0 vte --libs`
-# MAEMO STUFF
-ifeq ($(MAEMO),1)
-CFLAGS+=`pkg-config --cflags hildon-1`
-LIBS+=`pkg-config --libs hildon-1`
-endif
+GRDIR=${DESTDIR}/${DATADIR}/gradare2/
 
 
 all: ${BIN}
@@ -28,14 +22,15 @@ ${OBJ}: %.o: %.c
 	@echo 'Compiling $<'
 	${CC} ${CFLAGS} -c -o $@ $<
 
+
 install:
-	@echo 'Installing gradare'
+	@echo 'Installing gradare2'
 	${INSTALL_DIR} ${DESTDIR}/${PREFIX}/bin
 	-${INSTALL_PROGRAM} ${BIN} ${DESTDIR}/${PREFIX}/bin
-	-rm -rf ${DESTDIR}/${DATADIR}/radare/gradare/*
-	mkdir -p ${DESTDIR}/${DATADIR}/radare/gradare/
-	cp -rf grsc/* ${DESTDIR}/${DATADIR}/radare/gradare/
-	-chmod +x ${DESTDIR}/${DATADIR}/radare/gradare/Shell
+	-rm -rf ${GRDIR}/*
+	mkdir -p ${GRDIR}
+	cp -rf grsc/* ${GRDIR}/
+	-chmod +x ${GRDIR}/Shell
 
 clean:
 	@echo 'Cleaning gui'

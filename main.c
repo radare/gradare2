@@ -242,9 +242,6 @@ void gradare_save_project()
 	if (project_file) {
 		snprintf(buf, 4095, ":Ps %s\n\n", project_file);
 		vte_terminal_feed_child(VTE_TERMINAL(term), buf, strlen(buf));
-#if _MAEMO_
-		hildon_banner_show_information(GTK_WIDGET(w), NULL, "Project saved...");
-#endif
 	} else gradare_save_project_as();
 }
 

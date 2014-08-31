@@ -66,9 +66,6 @@ void gradare_open_program()
 		char cmd[4096];
 		char *filename = (char *)gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
 		if (is_executable(filename)) {
-#if _MAEMO_
-			hildon_banner_show_information(GTK_WIDGET(w), NULL, "Debugging new program...");
-#endif
 			sprintf(cmd,"( gradare 'dbg://%s' & )", filename);
 			system(cmd);
 		} else {
@@ -99,9 +96,6 @@ static void ok_cb()
 
 	gtk_widget_destroy(wop);
 	cancel_cb();
-#if _MAEMO_
-	hildon_banner_show_information(GTK_WIDGET(w), NULL, "Attaching to pid...");
-#endif
 	sprintf(cmd,"( gradare 'pid://%d' & )", pid);
 	sprintf(dpid, "%d", pid);
 	setenv("DPID", dpid, 1);
@@ -139,9 +133,6 @@ void gradare_open_process()
 			G_CALLBACK(ok_cb), NULL);
 		gtk_container_add(GTK_CONTAINER(hbb), ok);
 
-#if _MAEMO_
-	hildon_banner_show_information(GTK_WIDGET(w), NULL, "Searching for available pids...");
-#endif
 	combo = gtk_combo_box_new_text();
 
 	gtk_box_pack_start(GTK_BOX(hb), gtk_label_new("Select PID"), FALSE, FALSE, 5);
@@ -206,9 +197,6 @@ void gradare_open()
 	{
 		char cmd[4096];
 		char *filename = (char *)gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
-#if _MAEMO_
-	hildon_banner_show_information(GTK_WIDGET(w), NULL, "Opening file...");
-#endif
 		sprintf(cmd,"( gradare '%s' & )", filename);
 		system(cmd);
 	}

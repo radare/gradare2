@@ -72,9 +72,6 @@ void gradare_run_script() //GtkAction *action, CanoeWindow *w)
 	{
 		char cmd[4096];
 		char *filename = (char *)gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
-#if _MAEMO_
-		hildon_banner_show_information(GTK_WIDGET(w), NULL, "Running script...");
-#endif
 		if (strstr(filename, "lua"))
 			sprintf(cmd,":H lua %s\n", filename);
 		else	sprintf(cmd,":. %s\n", filename);
