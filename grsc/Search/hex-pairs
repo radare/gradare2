@@ -1,0 +1,4 @@
+#!/bin/sh
+eval `rsc EntryDialog "Search hex-pair" "Search string hex-pair formatted"`
+
+[ -n "$VARIABLE" ] && echo ":/x $VARIABLE"
