@@ -1,12 +1,15 @@
-include ../config.mk
+#include ../config.mk
 
 BIN=gradare${BINSFX}
 OBJ=main.o topbar.o toolbar.o actions.o execute.o prefs.o menubar.o dialog.o
-CFLAGS+=-DPREFIX=\"${PREFIX}\" -DGRSCDIR=\"${DATADIR}/radare/gradare\"
+CFLAGS+=-DPREFIX=\"${PREFIX}\" -DGRSCDIR=\"./grsc/\"
+#\"${DATADIR}/radare/gradare\"
 CFLAGS+=${GTK_FLAGS} ${VTE_FLAGS}
-#`pkg-config glib-2.0 gtk+-2.0 vte --cflags`
+CFLAGS+=-DVERSION=\"0.1\"
+GTK_FLAGS=`pkg-config glib-2.0 gtk+-2.0 vte --cflags`
+GTK_LIBS=`pkg-config glib-2.0 gtk+-2.0 vte --libs`
 LIBS+=${GTK_LIBS} ${VTE_LIBS}
-CFLAGS+=-D_MAEMO_=${MAEMO}
+#CFLAGS+=-D_MAEMO_=${MAEMO}
 #`pkg-config glib-2.0 gtk+-2.0 vte --libs`
 # MAEMO STUFF
 ifeq ($(MAEMO),1)

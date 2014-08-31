@@ -45,12 +45,7 @@ static char *command = NULL;
 int is_debugger = 0;
 
 GtkWidget *tool;
-#if _MAEMO_
-HildonWindow *w = NULL;
-HildonProgram *p = NULL;
-#else
 GtkWindow *w = NULL;
-#endif
 
 // TODO: autodetect project files (rdb)
 
@@ -111,7 +106,7 @@ void breakpoint_drop()
 	clip = gtk_widget_get_clipboard(term, GDK_SELECTION_PRIMARY);
 	vte_terminal_copy_clipboard(VTE_TERMINAL(term));
 	str = gtk_clipboard_wait_for_text(clip);
-	vte_terminal_feed_child(VTE_TERMINAL(term), ":!bp -", 6);
+	vte_terminal_feed_child(VTE_TERMINAL(term), ":db-", 4);
 	vte_terminal_feed_child(VTE_TERMINAL(term), str, strlen(str));
 	vte_terminal_feed_child(VTE_TERMINAL(term), "\n\n", 2);
 	if (gtk_combo_box_get_active(GTK_COMBO_BOX(combo)) == 1)
@@ -127,7 +122,7 @@ void breakpoint_to()
 	clip = gtk_widget_get_clipboard(term, GDK_SELECTION_PRIMARY);
 	vte_terminal_copy_clipboard(VTE_TERMINAL(term));
 	str = gtk_clipboard_wait_for_text(clip);
-	vte_terminal_feed_child(VTE_TERMINAL(term), ":!bp ", 5);
+	vte_terminal_feed_child(VTE_TERMINAL(term), ":db ", 4);
 	vte_terminal_feed_child(VTE_TERMINAL(term), str, strlen(str));
 	vte_terminal_feed_child(VTE_TERMINAL(term), "\n\n", 2);
 	if (gtk_combo_box_get_active(GTK_COMBO_BOX(combo)) == 1)
@@ -144,7 +139,7 @@ void continue_until_here()
 	vte_terminal_copy_clipboard(VTE_TERMINAL(term));
 	str = gtk_clipboard_wait_for_text(clip);
 	if (str && str[0]) {
-		vte_terminal_feed_child(VTE_TERMINAL(term), ":!cont ", 7);
+		vte_terminal_feed_child(VTE_TERMINAL(term), ":dc ", 4);
 		vte_terminal_feed_child(VTE_TERMINAL(term), str, strlen(str));
 		vte_terminal_feed_child(VTE_TERMINAL(term), "\n\n", 2);
 		if (gtk_combo_box_get_active(GTK_COMBO_BOX(combo)) == 1)
@@ -311,9 +306,6 @@ void gradare_new_monitor()
 
 	w = (GtkWindow *)GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	w->allow_shrink = TRUE;
-#if _MAEMO_
-	hildon_program_add_window(p, w);
-#endif
 	gtk_window_resize (GTK_WINDOW(w), 600, 400);
 	gtk_window_set_title (GTK_WINDOW(w), "gradare monitor");
 	// XXX memleak !!! should be passed to a destroyer function for 'mon'
@@ -357,13 +349,8 @@ void toggle_fullscreen()
 	fs = !fs;
 }
 
-#if _MAEMO_
-#define KEY_INCFONT GDK_F7
-#define KEY_DECFONT GDK_F8
-#else
 #define KEY_INCFONT GDK_KP_Add
 #define KEY_DECFONT GDK_KP_Subtract
-#endif
 
 /* Callback for hardware keys */
 gboolean key_press_cb(GtkWidget * widget, GdkEventKey * event, GtkWindow * window)
@@ -471,14 +458,8 @@ int main(int argc, char **argv, char **envp)
 	init_home_directory ();
 
 	g_set_application_name ("gradare");
-#if _MAEMO_
-	p = HILDON_PROGRAM (hildon_program_get_instance ());
-	w = HILDON_WINDOW (hildon_window_new ());
-	hildon_program_add_window (p, w);
-#else
 	w = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	w->allow_shrink = TRUE;
-#endif
 	g_signal_connect(G_OBJECT(w), "key_press_event", G_CALLBACK(key_press_cb), w);
 
 	gtk_window_resize(GTK_WINDOW(w), 800,600);
@@ -487,24 +468,11 @@ int main(int argc, char **argv, char **envp)
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(w), vbox);
-#if _MAEMO_
-	{
-		GtkMenu *menu = GTK_MENU(gradare_menubar_hildon_new(w));
-		hildon_window_set_menu(HILDON_WINDOW(w), menu);
-		hildon_program_set_common_menu(HILDON_PROGRAM(p), menu);
-	}
-#else
 	gtk_box_pack_start(GTK_BOX(vbox),
 			GTK_WIDGET(gradare_menubar_new(w)), FALSE, FALSE, 0);
-#endif
 
 	tool = gradare_toolbar_new(NULL);
-#if _MAEMO_
-	hildon_window_add_toolbar(HILDON_WINDOW(w), GTK_TOOLBAR(tool));
-	//	hildon_program_set_common_toolbar(p, tool);
-#else
 	gtk_box_pack_start(GTK_BOX(vbox), tool, FALSE, FALSE, 0);
-#endif
 	chos = gradare_topbar_new();
 	gtk_box_pack_start(GTK_BOX(vbox), chos, FALSE, FALSE, 0);
 

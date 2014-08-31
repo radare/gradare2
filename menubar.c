@@ -23,7 +23,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "main.h"
-#include "../global.h"
 
 void focus_input()   { gtk_widget_grab_focus(GTK_WIDGET(entry));  }
 void focus_combo()   { gtk_widget_grab_focus(GTK_WIDGET(combo));  }

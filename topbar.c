@@ -39,17 +39,17 @@ void core_cmd_end()
 void arch_mode_changed(GtkComboBox *widget, gpointer user_data)
 {
 	switch(gtk_combo_box_get_active(widget)) {
-	case 0: core_cmd(":eval asm.arch = intel16\n\n"); break;
-	case 1: core_cmd(":eval asm.arch = intel32\n\n"); break;
-	case 2: core_cmd(":eval asm.arch = intel64\n\n"); break;
-	case 3: core_cmd(":eval asm.arch = arm\n\n"); break;
-	case 4: core_cmd(":eval asm.arch = ppc\n\n"); break;
-	case 5: core_cmd(":eval asm.arch = 68k\n\n"); break;
-	case 6: core_cmd(":eval asm.arch = java\n\n"); break;
-	case 7: core_cmd(":eval asm.arch = mips\n\n"); break;
-	case 8: core_cmd(":eval asm.arch = csr\n\n"); break;
-	case 9: core_cmd(":eval asm.arch = sparc\n\n"); break;
-	case 10: core_cmd(":eval asm.arch = 8051\n\n"); break;
+	case 0: core_cmd(":e asm.arch=x86;e asm.bits=16\n\n"); break;
+	case 1: core_cmd(":e asm.arch=x86;e asm.bits=32\n\n"); break;
+	case 2: core_cmd(":e asm.arch=x86;e asm.bits=64\n\n"); break;
+	case 3: core_cmd(":e asm.arch=arm\n\n"); break;
+	case 4: core_cmd(":e asm.arch=ppc\n\n"); break;
+	case 5: core_cmd(":e asm.arch=68k\n\n"); break;
+	case 6: core_cmd(":e asm.arch=java\n\n"); break;
+	case 7: core_cmd(":e asm.arch=mips\n\n"); break;
+	case 8: core_cmd(":e asm.arch=csr\n\n"); break;
+	case 9: core_cmd(":e asm.arch=sparc\n\n"); break;
+	case 10: core_cmd(":e asm.arch=8051\n\n"); break;
 	}
 
 	core_cmd_end();
