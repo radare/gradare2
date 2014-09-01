@@ -112,7 +112,7 @@ void gradare_open_process()
 	vb = (GtkVBox*) gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	hb = (GtkHBox*) gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
-	hbb = gtk_hbutton_box_new();
+	hbb = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 		gtk_container_set_border_width(GTK_CONTAINER(hbb), 5);
 		gtk_button_box_set_layout(GTK_BUTTON_BOX(hbb), GTK_BUTTONBOX_END);
 		ok = gtk_button_new_from_stock(GTK_STOCK_OK);
