@@ -484,6 +484,9 @@ int main(int argc, char **argv, char **envp)
 	gtk_box_pack_start(GTK_BOX(hpan), acti, TRUE, TRUE, 0);
 
 	term = term_new ();
+
+	gtk_widget_set_hexpand(term, 1);
+	gtk_widget_set_vexpand(term, 1);
 	gtk_container_add (GTK_CONTAINER(hpan), term);
 	gtk_widget_show_all (GTK_WIDGET(w));
 

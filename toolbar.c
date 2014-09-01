@@ -38,26 +38,20 @@ void gradare_new()
 
 static int is_executable(const char *file)
 {
-	int ret;
 	struct stat buf;
 
-	ret = stat(file, &buf);
-	if (buf.st_mode&S_IXUSR)
-		return 1;
-	return 0;
+	if (stat(file, &buf) != -1)
+		return buf.st_mode & S_IXUSR;
 }
 
 void gradare_open_program()
 {
 	GtkWidget *fcd;
 
-#if 0
-	fcd = hildon_file_chooser_dialog_new(NULL,?);
-#endif
 	fcd = gtk_file_chooser_dialog_new (
-		"Debug program...", NULL, // parent
+		"Debug program", NULL, // parent
 		GTK_FILE_CHOOSER_ACTION_OPEN,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		"_Cancel", GTK_RESPONSE_CANCEL,
 		"_Ok", GTK_RESPONSE_ACCEPT,
 		NULL);
 
@@ -420,7 +414,6 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 	strcpy(buf, g_get_home_dir());
 	strcat(buf, "/.radare/toolbar");
 	gradare_fill_toolbar(GTK_TOOLBAR(toolbar), buf);
-	//gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolbar), GTK_ICON_SIZE_LARGE_TOOLBAR); // SMALL
 
 	return toolbar;
 }
