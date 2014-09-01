@@ -403,7 +403,7 @@ GtkWidget *gradare_actions_new()
 {
 	GtkWidget *exp =gtk_expander_new("");
 	GtkWidget *vpan = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	GtkWidget *add;
 	GtkTreeViewColumn *col;
 
@@ -417,6 +417,7 @@ GtkWidget *gradare_actions_new()
 	mo_cat = (GtkWidget *)gtk_list_store_new(1, G_TYPE_STRING);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tv_cat), GTK_TREE_MODEL(mo_cat));
 	col = gtk_tree_view_column_new_with_attributes("Category", render_text, "text", 0, NULL);
+	gtk_widget_set_vexpand (col, 1);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tv_cat), col);
 	g_signal_connect (tv_cat, "cursor-changed", G_CALLBACK(action_category_activated), NULL);
 	gtk_container_add(GTK_CONTAINER(sc_cat), tv_cat);
@@ -434,12 +435,15 @@ GtkWidget *gradare_actions_new()
 	mo_act = (GtkWidget *)gtk_list_store_new(1, G_TYPE_STRING);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tv_act), GTK_TREE_MODEL(mo_act));
 	col = gtk_tree_view_column_new_with_attributes("Action", render_text, "text", 0, NULL);
+	gtk_widget_set_vexpand (col, 1);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tv_act), col);
 	g_signal_connect (tv_act, "button-release-event", G_CALLBACK(action_activated), NULL);
 	gtk_container_add(GTK_CONTAINER(sc_act), tv_act);
 	gtk_paned_pack2(GTK_PANED(vpan), sc_act, TRUE, TRUE);
 	cat = NULL;
 
+	gtk_box_set_homogeneous (vpan, 1);
+	gtk_widget_set_vexpand (vpan, 1);
 	gtk_paned_set_position(GTK_PANED(vpan), 140);
 
 	gtk_container_add(GTK_CONTAINER(vbox), vpan);
@@ -447,6 +451,8 @@ GtkWidget *gradare_actions_new()
 	add = gtk_button_new_from_stock("gtk-add");
 	g_signal_connect(add, "button-release-event", toolbar_add, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), GTK_WIDGET(add), FALSE, FALSE, 0);
+	gtk_widget_set_vexpand (add, 0);
+	gtk_widget_set_vexpand (vbox, 1);
 
 	//return vbox;
 	gtk_container_add(GTK_CONTAINER(exp), vbox);

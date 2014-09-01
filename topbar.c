@@ -100,6 +100,7 @@ GtkWidget *gradare_topbar_new()
 	entry = gtk_entry_new();
 	gtk_container_add(GTK_CONTAINER(hbox), entry);
 	g_signal_connect(entry, "activate", G_CALLBACK(commandline_activated), 0);
+	gtk_widget_set_hexpand (entry, 1);
 
 	/* add arch combo box */
 	combo =	gtk_combo_box_text_new ();
