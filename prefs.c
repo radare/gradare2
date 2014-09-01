@@ -85,7 +85,7 @@ static void toggle_changed(void *foo, void *data)
 static GtkWidget *draw_toggles_for(int panel_id)
 {
 	GtkWidget *bytes;
-	GtkVBox *vbox = (GtkVBox *)gtk_vbox_new(FALSE, 5);
+	GtkBox *vbox = (GtkBox*)gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	int i;
 	
 	for(i=0;toggles[i].label!=NULL;i++) {
@@ -94,7 +94,8 @@ static GtkWidget *draw_toggles_for(int panel_id)
 		bytes = gtk_check_button_new_with_label(toggles[i].label);
 		gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(bytes), FALSE, FALSE, 2); 
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bytes), toggles[i].value);
-		g_signal_connect(GTK_COMBO_BOX(bytes), "clicked", GTK_SIGNAL_FUNC(toggle_changed), (gpointer)i);
+		g_signal_connect(GTK_COMBO_BOX(bytes), "clicked",
+			G_CALLBACK(toggle_changed), GINT_TO_POINTER(i));
 	}
 
 	return (GtkWidget*)vbox;
@@ -119,7 +120,7 @@ void prefs_open()
 	gtk_window_set_title(GTK_WINDOW(pw), "gradare preferences");
 	g_signal_connect(pw, "destroy", G_CALLBACK(prefs_close), 0);
 
-	vbox = gtk_vbox_new(FALSE, 5);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(pw), vbox);
 
 	nb = gtk_notebook_new();
@@ -130,17 +131,18 @@ void prefs_open()
 	gtk_container_add(GTK_CONTAINER(vbox), nb);
 	//gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new("TODO O:)"), FALSE, FALSE, 5); 
 
-	hbbox = gtk_hbutton_box_new();
+	hbbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 5);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbbox), 5);
 
-	cancel = gtk_button_new_from_stock("gtk-cancel");
+	//cancel = gtk_button_new_from_stock("gtk-cancel");
+	cancel = gtk_button_new_from_icon_name("gtk-cancel", 10);
 	g_signal_connect(cancel, "button-release-event",
 		(gpointer)prefs_close, (gpointer)NULL);
 	gtk_container_add(GTK_CONTAINER(hbbox), cancel);
 
-	ok = gtk_button_new_from_stock("gtk-ok");
+	//ok = gtk_button_new_from_stock("gtk-ok");
+	ok = gtk_button_new_from_icon_name("gtk-ok", 10);
 	g_signal_connect(ok, "button-release-event",
 		(gpointer)prefs_close, (gpointer)1);
 	gtk_container_add(GTK_CONTAINER(hbbox), ok);

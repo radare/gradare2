@@ -39,7 +39,7 @@ int dialog_yes_no(const char *question, int two)
         // XXX no access to w pointer
         //gtk_window_set_transient_for(GTK_WINDOW(d), GTK_WINDOW(w->window));
         gtk_container_add(
-                GTK_CONTAINER(d->vbox),
+                GTK_CONTAINER(gtk_dialog_get_content_area (d)),
                 gtk_label_new(question));
         gtk_widget_show_all(GTK_WIDGET(d));
 

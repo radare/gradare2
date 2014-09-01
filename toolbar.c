@@ -58,7 +58,7 @@ void gradare_open_program()
 		"Debug program...", NULL, // parent
 		GTK_FILE_CHOOSER_ACTION_OPEN,
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+		"_Ok", GTK_RESPONSE_ACCEPT,
 		NULL);
 
 	gtk_window_set_position( GTK_WINDOW(fcd), GTK_WIN_POS_CENTER);
@@ -90,7 +90,7 @@ static void ok_cb()
 	//int pid = gtk_combo_box_get_active(combo);
 	char dpid[10];
 	char cmd[4096];
-	char *str = gtk_combo_box_get_active_text(
+	char *str = gtk_combo_box_text_get_active_text(
 			GTK_COMBO_BOX(combo));
 	int pid = atoi(str);
 
@@ -115,13 +115,12 @@ void gradare_open_process()
 	w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(w), "Attach to process...");
 
-	vb = (GtkVBox*) gtk_vbox_new(FALSE, 5);
-	hb = (GtkHBox*) gtk_hbox_new(FALSE, 5);
+	vb = (GtkVBox*) gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	hb = (GtkHBox*) gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
 	hbb = gtk_hbutton_box_new();
 		gtk_container_set_border_width(GTK_CONTAINER(hbb), 5);
 		gtk_button_box_set_layout(GTK_BUTTON_BOX(hbb), GTK_BUTTONBOX_END);
-		gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbb), 5);
 		ok = gtk_button_new_from_stock(GTK_STOCK_OK);
 		cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 
@@ -133,7 +132,7 @@ void gradare_open_process()
 			G_CALLBACK(ok_cb), NULL);
 		gtk_container_add(GTK_CONTAINER(hbb), ok);
 
-	combo = gtk_combo_box_new_text();
+	combo = gtk_combo_box_text_new();
 
 	gtk_box_pack_start(GTK_BOX(hb), gtk_label_new("Select PID"), FALSE, FALSE, 5);
 	gtk_box_pack_start(GTK_BOX(hb), combo, FALSE, FALSE, 5);
@@ -156,7 +155,7 @@ void gradare_open_process()
 				close(fd);
 			}
 			sprintf(str, "%d %s", i, cmdline);
-			gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), i, str);
+			gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), i, str);
 			//printf("%d %s\n", i, cmdline);
 			break;
 //		case -1:
@@ -188,8 +187,8 @@ void gradare_open()
 	fcd = gtk_file_chooser_dialog_new (
 		"Open file...", NULL, // parent
 		GTK_FILE_CHOOSER_ACTION_OPEN,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+		"_Cancel", GTK_RESPONSE_CANCEL,
+		"_Ok", GTK_RESPONSE_ACCEPT,
 		NULL);
 
 	gtk_window_set_position( GTK_WINDOW(fcd), GTK_WIN_POS_CENTER);
@@ -208,25 +207,25 @@ void gradare_shell(const char **cmd)
 {
 	GtkWidget *vte;
 	GtkWindow *w = GTK_WINDOW ( gtk_window_new(GTK_WINDOW_TOPLEVEL) );
-	w->allow_shrink=TRUE;
+	//w->allow_shrink=TRUE;
 	gtk_window_resize(GTK_WINDOW(w), 600,400);
 	gtk_window_set_title(GTK_WINDOW(w), "radare manpage");
 	vte = vte_terminal_new();
 	gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(vte));
-	vte_terminal_fork_command(
+	vte_terminal_fork_command_full(
 		VTE_TERMINAL(vte),
-		cmd[0], (char **)cmd, NULL, ".",
-		FALSE, FALSE, FALSE);
+		VTE_PTY_NO_LASTLOG | VTE_PTY_NO_UTMP | VTE_PTY_NO_WTMP,
+		NULL,
+		(char **)cmd,
+		NULL,
+		G_SPAWN_SEARCH_PATH,
+		NULL, NULL, NULL, NULL);
 	gtk_widget_show_all(GTK_WIDGET(w));
 }
 
 void gradare_help()
 {
-	//char cmd[1024];
-	const char *cmd[] ={"man","radare",""};
-	// XXX should be a dialog !
-	//sprintf(cmd, "( xterm -bg black -fg gray -fn 10x20 -e 'man radare' & )");
-	//system(cmd);
+	const char *cmd[] ={"man", "radare2", NULL};
 	gradare_shell(cmd);
 }
 
@@ -262,9 +261,9 @@ void gradare_refresh()
 	GList *list = gtk_container_get_children(GTK_CONTAINER(tool));
 
 	g_list_foreach(list, (GFunc)gtk_widget_destroy, NULL);
-	gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 0);
-	gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 1);
-	gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 2);
+	//gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 0);
+	//gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 1);
+	//gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 2);
 
 	tool = gradare_toolbar_new(tool);
 	vte_terminal_feed_child(VTE_TERMINAL(term), "Q\nV\n", 4);
@@ -287,7 +286,7 @@ void toggle_toolbar()
 			GTK_ICON_SIZE_SMALL_TOOLBAR);
 		break;
 	case 2:
-		gtk_widget_hide_all(tool);
+		gtk_widget_hide(tool);
 		v=-1;
 		break;
 	}
@@ -296,9 +295,9 @@ void toggle_toolbar()
 	else  gtk_toolbar_set_icon_size(GTK_TOOLBAR(tool), GTK_ICON_SIZE_LARGE_TOOLBAR); // LARGE
 
 //	if (v)
-//		gtk_widget_show_all(tool);
+//		gtk_widget_show(tool);
 //	else
-//		gtk_widget_hide_all(tool);
+//		gtk_widget_hide(tool);
 }
 
 gint gradare_shortcut_click( GtkWidget *widget, GdkEventButton *event, gpointer   data )
@@ -349,12 +348,11 @@ void gradare_fill_toolbar(GtkToolbar *toolbar, char *path)
 	while (name != NULL) {
 		if (name[0] != '.') {
 			ico = get_shortcut_icon(name);
-			item = gtk_toolbar_append_item(
-				toolbar, name, name, "",
-				gtk_image_new_from_stock(ico, GTK_ICON_SIZE_MENU),
-				GTK_SIGNAL_FUNC(gradare_shortcut), name);
-			g_signal_connect(item, "button-release-event",
-				G_CALLBACK(gradare_shortcut_click), name);
+			item = gtk_tool_button_new_from_stock (ico);
+
+			g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_shortcut), name);
+			g_signal_connect(item, "button-release-event", G_CALLBACK(gradare_shortcut_click), name);
+			gtk_toolbar_insert (toolbar, item, 0);
 		}
 		name = (gchar *)g_dir_read_name (dir);
 	}
@@ -365,67 +363,58 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 {
 	char buf[1024];
 	GtkWidget *toolbar = base;
+	GtkToolItem* item;
 
 	if (toolbar == NULL)
 		toolbar = gtk_toolbar_new();
-	else	gtk_toolbar_remove_space(GTK_TOOLBAR(toolbar), 0);
 
 	/* set defaults */
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
 	gtk_container_set_border_width(GTK_CONTAINER(toolbar), 0);
-	//gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolbar), GTK_ICON_SIZE_LARGE_TOOLBAR); // LARGE
 	gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolbar), GTK_ICON_SIZE_SMALL_TOOLBAR); // LARGE
 
 	/* default gradare buttons */
-#if 0
-	gtk_toolbar_append_item(
-		GTK_TOOLBAR(toolbar), "NewWindow", "New Window", "",
-		gtk_image_new_from_stock("gtk-new", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_new), NULL);
-#endif
 
-	gtk_toolbar_append_item(
-		GTK_TOOLBAR(toolbar), "Open", "Open file", "",
-		gtk_image_new_from_stock("gtk-open", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_open), NULL);
-	gtk_toolbar_append_item(
-		GTK_TOOLBAR(toolbar), "Open program", "Open program", "",
-		gtk_image_new_from_stock("gtk-execute", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_open_program), NULL);
-	gtk_toolbar_append_item(
-		GTK_TOOLBAR(toolbar), "Attach", "Attach process", "",
-		gtk_image_new_from_stock("gtk-properties", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_open_process), NULL);
+	item = gtk_tool_button_new (NULL, "Open");
+	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_open), NULL);
+	gtk_toolbar_insert (toolbar, item, -1);
 
-	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+	item = gtk_tool_button_new (NULL, "Open program");
+	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_open_program), NULL);
+	gtk_toolbar_insert (toolbar, item, -1);
 
-	gtk_toolbar_append_item(
-		GTK_TOOLBAR(toolbar), "Undo seek", "Undo", "",
-		gtk_image_new_from_stock("gtk-undo", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_undo), NULL);
-	gtk_toolbar_append_item(
-		GTK_TOOLBAR(toolbar), "Redo seek", "Redo", "",
-		gtk_image_new_from_stock("gtk-redo", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_redo), NULL);
+	item = gtk_tool_button_new (NULL, "Attach");
+	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_open_process), NULL);
+	gtk_toolbar_insert (toolbar, item, -1);
 
-	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+	//gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
-	gtk_toolbar_append_item(
-		GTK_TOOLBAR(toolbar), "Refresh toolbar", "Refresh", "",
-		gtk_image_new_from_stock("gtk-refresh", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_refresh), NULL);
+	item = gtk_tool_button_new(NULL, "Undo");
+	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_undo), NULL);
+	gtk_toolbar_insert (toolbar, item, -1);
+
+	item = gtk_tool_button_new (NULL, "Redo");
+	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_redo), NULL);
+	gtk_toolbar_insert (toolbar, item, -1);
+
+	//gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+
+	item = gtk_tool_button_new (NULL, "Refresh");
+	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_refresh), NULL);
+	gtk_toolbar_insert (toolbar, item, -1);
+
 #if 0
 	gtk_toolbar_append_item(
 		GTK_TOOLBAR(toolbar), "Preferences", "Preferences", "",
-		gtk_image_new_from_stock("gtk-preferences", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(prefs_open), NULL);
+		gtk_image_new_from_icon_name("gtk-preferences", GTK_ICON_SIZE_MENU),
+		G_CALLBACK(prefs_open), NULL);
 	gtk_toolbar_append_item(
 		GTK_TOOLBAR(toolbar), "Help", "Help", "",
-		gtk_image_new_from_stock("gtk-help", GTK_ICON_SIZE_MENU),
-		GTK_SIGNAL_FUNC(gradare_help), NULL);
+		gtk_image_new_from_icon_name("gtk-help", GTK_ICON_SIZE_MENU),
+		G_CALLBACK(gradare_help), NULL);
 #endif
 
-	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+	//gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
 	/* append user-defined buttons */
 	strcpy(buf, g_get_home_dir());

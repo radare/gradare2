@@ -64,7 +64,7 @@ void gradare_run_script() //GtkAction *action, CanoeWindow *w)
 		"Select script...", NULL, // parent
 		GTK_FILE_CHOOSER_ACTION_OPEN,
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+		"_Ok", GTK_RESPONSE_ACCEPT,
 		NULL);
 
 	gtk_window_set_position( GTK_WINDOW(fcd), GTK_WIN_POS_CENTER);
@@ -96,7 +96,7 @@ void gradare_about() //GtkAction *action, CanoeWindow *w)
 //printf("WindowPath: %s\n", w->path);
 
         gad = (GtkAboutDialog *) gtk_about_dialog_new();
-        gtk_about_dialog_set_name(gad, "Gradare");
+        gtk_about_dialog_set_program_name (gad, "Gradare");
         gtk_window_set_position(GTK_WINDOW(gad), GTK_WIN_POS_CENTER);
         gtk_about_dialog_set_authors(gad,authors);
         gtk_about_dialog_set_copyright(gad,authors[2]);
@@ -268,43 +268,43 @@ GtkMenu *gradare_menubar_hildon_new(GtkWindow *w)
 
 	mi = (GtkMenuItem *)gtk_image_menu_item_new_with_label("Open file");
 	g_signal_connect_object (mi, "activate", gradare_open, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Debug program");
 	g_signal_connect_object (mi, "activate", gradare_open_program, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Attach to process");
 	g_signal_connect_object (mi, "activate", gradare_open_process, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Edit script");
 	g_signal_connect_object (mi, "activate", gradare_edit_script, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Code graph");
 	g_signal_connect_object (mi, "activate", gradare_new_graph, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Monitor window");
 	g_signal_connect_object (mi, "activate", gradare_new_monitor, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Refresh");
 	g_signal_connect_object (mi, "activate", gradare_refresh, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Preferences");
 	g_signal_connect_object (mi, "activate", prefs_open, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("About");
 	g_signal_connect_object (mi, "activate", gradare_about, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	mi = (GtkMenuItem *) gtk_image_menu_item_new_with_label("Quit");
 	g_signal_connect_object (mi, "activate", do_exit, w, 0);
-	gtk_menu_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (mi));
 
 	return menu;
 }
@@ -325,7 +325,7 @@ GtkWidget *gradare_menubar_new(GtkWindow *w)
 			    entries, n_entries, NULL);
 
 	/* set the first user_data passed to the action group */
-	gtk_ui_manager_insert_action_group (uima, action_group, (gint)w);
+	gtk_ui_manager_insert_action_group (uima, action_group, GPOINTER_TO_INT(w));
 
 	gtk_window_add_accel_group (GTK_WINDOW (w),
 		gtk_ui_manager_get_accel_group (uima));

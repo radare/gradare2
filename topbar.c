@@ -81,7 +81,7 @@ void commandline_activated(GtkEntry *entry, gpointer  user_data)
 	const char *cmd = gtk_entry_get_text(entry);
 	int len = strlen(cmd);
 
-	gtk_entry_select_region(entry, 0, len);
+	gtk_editable_select_region(entry, 0, len);
 	buf = (char *)malloc(len+5);
 	snprintf(buf, len+4, ":%s\n\n", cmd);
 	core_cmd(buf);
@@ -89,7 +89,7 @@ void commandline_activated(GtkEntry *entry, gpointer  user_data)
 
 GtkWidget *gradare_topbar_new()
 {
-	GtkWidget *hbox = gtk_hbox_new(FALSE, 5);
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	//GtkWidget *refresh;
 
 	/**
@@ -102,37 +102,37 @@ GtkWidget *gradare_topbar_new()
 	g_signal_connect(entry, "activate", G_CALLBACK(commandline_activated), 0);
 
 	/* add arch combo box */
-	combo = gtk_combo_box_new_text();
+	combo =	gtk_combo_box_text_new ();
 	//gtk_combo_set_use_arrows( GTK_COMBO(combo),1);
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 0, "hexadecimal");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 1, "debugger");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 2, "disassembly");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 3, "octal");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 4, "binary");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 5, "shellcode");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 6, "string");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 7, "hex pairs");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 8, "raw");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 0, "hexadecimal");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 1, "debugger");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 2, "disassembly");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 3, "octal");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 4, "binary");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 5, "shellcode");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 6, "string");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 7, "hex pairs");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(combo), 8, "raw");
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 
-	g_signal_connect(GTK_COMBO_BOX(combo), "changed", GTK_SIGNAL_FUNC(print_mode_changed), 0);
+	g_signal_connect(GTK_COMBO_BOX(combo), "changed", G_CALLBACK(print_mode_changed), 0);
 	gtk_box_pack_end(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
 
 	/* add arch combo box */
-	arch = gtk_combo_box_new_text();
+	arch = gtk_combo_box_text_new();
 	//gtk_combo_set_use_arrows( GTK_COMBO_BOX(arch),1);
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 0, "intel16");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 1, "intel32");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 2, "intel64");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 3, "arm");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 4, "ppc");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 5, "68k");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 6, "java");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 7, "mips");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 8, "csr");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 9, "sparc");
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 10, "8051");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 0, "intel16");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 1, "intel32");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 2, "intel64");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 3, "arm");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 4, "ppc");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 5, "68k");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 6, "java");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 7, "mips");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 8, "csr");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 9, "sparc");
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX(arch), 10, "8051");
 #if _MAEMO_
 	gtk_combo_box_set_active(GTK_COMBO_BOX(arch), 3);
 #else
@@ -151,7 +151,7 @@ GtkWidget *gradare_topbar_new()
 	gtk_combo_box_set_active(GTK_COMBO_BOX(arch), 1);
  #endif
 #endif
-	g_signal_connect(GTK_COMBO_BOX(arch), "changed", GTK_SIGNAL_FUNC(arch_mode_changed), 0);
+	g_signal_connect(GTK_COMBO_BOX(arch), "changed", G_CALLBACK(arch_mode_changed), 0);
 	gtk_box_pack_end(GTK_BOX(hbox), arch, FALSE, FALSE, 0);
 
 	return hbox;

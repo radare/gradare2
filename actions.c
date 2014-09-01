@@ -157,8 +157,8 @@ gchar *stock_id[39] = {
 	GTK_STOCK_CDROM,
 	GTK_STOCK_HARDDISK,
 	GTK_STOCK_FLOPPY,
-	GTK_STOCK_OK,
-	GTK_STOCK_CANCEL,
+	"_Ok",
+	"_Cancel",
 	GTK_STOCK_MEDIA_PREVIOUS,
 	GTK_STOCK_MEDIA_NEXT,
 	GTK_STOCK_MEDIA_RECORD
@@ -286,7 +286,7 @@ gint toolbar_add_close(void *item, GdkEvent *event, gpointer data)
 	if (data == 0)
 		return 1;
 
-	if (((int)data) == -1)
+	if (GPOINTER_TO_INT(data) == -1)
 		return 1;
 
 	if (home == NULL) {
@@ -338,12 +338,12 @@ void toolbar_add()
 	gtk_widget_show_all(wt);
 	g_signal_connect(wt, "destroy", G_CALLBACK(toolbar_add_close), (gpointer)-1);
 
-	vbox = gtk_vbox_new(FALSE, 5);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(wt), vbox);
 
 	gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new("~/.radare/toolbar"), FALSE, FALSE, 5);
 
-	hbox = gtk_hbox_new(FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
 
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("Icon:"), FALSE, FALSE, 5);
@@ -367,7 +367,7 @@ void toolbar_add()
 	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 5);
 // COMBO
 
-	hbox = gtk_hbox_new(FALSE, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
 
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("Alias:"), FALSE, FALSE, 5);
@@ -376,10 +376,9 @@ void toolbar_add()
 	gtk_entry_set_text(GTK_ENTRY(entry), name);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 5);
 
-	hbbox = gtk_hbutton_box_new();
+	hbbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 5);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbbox), 5);
 
 	cancel = gtk_button_new_from_stock("gtk-cancel");
 	g_signal_connect(cancel, "button-release-event",
@@ -403,8 +402,8 @@ GtkWidget *catact = NULL;
 GtkWidget *gradare_actions_new()
 {
 	GtkWidget *exp =gtk_expander_new("");
-	GtkWidget *vpan = gtk_vpaned_new();
-	GtkWidget *vbox = gtk_vbox_new(FALSE, 5);
+	GtkWidget *vpan = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	GtkWidget *add;
 	GtkTreeViewColumn *col;
 
