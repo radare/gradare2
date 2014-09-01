@@ -358,9 +358,11 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 	char buf[1024];
 	GtkWidget *toolbar = base;
 	GtkToolItem* item;
+	int size;
 
 	if (toolbar == NULL)
 		toolbar = gtk_toolbar_new();
+	size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar));
 
 	/* set defaults */
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
@@ -369,31 +371,31 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 
 	/* default gradare buttons */
 
-	item = gtk_tool_button_new (NULL, "Open");
+	item = gtk_tool_button_new (gtk_image_new_from_stock ("gtk-open", size), "Open");
 	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_open), NULL);
 	gtk_toolbar_insert (toolbar, item, -1);
 
-	item = gtk_tool_button_new (NULL, "Open program");
+	item = gtk_tool_button_new (gtk_image_new_from_stock ("gtk-execute", size), "Open program");
 	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_open_program), NULL);
 	gtk_toolbar_insert (toolbar, item, -1);
 
-	item = gtk_tool_button_new (NULL, "Attach");
+	item = gtk_tool_button_new (gtk_image_new_from_stock ("gtk-properties", size), "Attach");
 	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_open_process), NULL);
 	gtk_toolbar_insert (toolbar, item, -1);
 
-	//gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+	gtk_toolbar_insert (toolbar, gtk_separator_tool_item_new(), -1);
 
-	item = gtk_tool_button_new(NULL, "Undo");
+	item = gtk_tool_button_new (gtk_image_new_from_stock ("gtk-undo", size), "Undo");
 	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_undo), NULL);
 	gtk_toolbar_insert (toolbar, item, -1);
 
-	item = gtk_tool_button_new (NULL, "Redo");
+	item = gtk_tool_button_new (gtk_image_new_from_stock ("gtk-redo", size), "Redo");
 	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_redo), NULL);
 	gtk_toolbar_insert (toolbar, item, -1);
 
-	//gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+	gtk_toolbar_insert (toolbar, gtk_separator_tool_item_new(), -1);
 
-	item = gtk_tool_button_new (NULL, "Refresh");
+	item = gtk_tool_button_new (gtk_image_new_from_stock ("gtk-refresh", size), "Refresh");
 	g_signal_connect(item, "button-press-event", G_CALLBACK(gradare_refresh), NULL);
 	gtk_toolbar_insert (toolbar, item, -1);
 
