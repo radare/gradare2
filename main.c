@@ -211,14 +211,14 @@ gboolean monitor_button_clicked(GtkWidget *but, gpointer user_data)
 	char buf[1024];
 	const char *cmd[4] = { PREFIX"/bin/rsc", "monitor", (const char *)&miau, 0};
 
-	sprintf(miau, "mon%d", mon->id);
-	snprintf(buf, 1023, "rsc monitor %s \"%s\"", miau,
+	sprintf (miau, "mon%d", mon->id);
+	snprintf (buf, sizeof (buf), "rsc monitor %s \"%s\"", miau,
 		gtk_entry_get_text((GtkEntry*)mon->entry));
-	system(buf);
-
+	system (buf);
+#if USE_GTK2
 	vte_terminal_fork_command (VTE_TERMINAL(mon->term), cmd[0],
 		(char **)cmd, NULL, ".", FALSE, FALSE, FALSE);
-
+#endif
 	return FALSE;
 }
 
@@ -285,8 +285,10 @@ GtkWidget *term_new ()
 	vte_terminal_set_mouse_autohide((VteTerminal*)term, TRUE);
 #endif
 	vte_terminal_set_scrollback_lines((VteTerminal*)term, 3000);
+#if USE_GTK2
 	vte_terminal_set_font_from_string_full((VteTerminal*)term,
 		font, VTE_ANTI_ALIAS_FORCE_DISABLE);
+#endif
 	g_signal_connect (term, "button-press-event",
 		G_CALLBACK (popup_context_menu), NULL);
 
@@ -342,8 +344,10 @@ int console_font_size(int newsize)
 	if (newsize<4) newsize = 4;
 	if (newsize>72) newsize = 72;
 	sprintf(buf, "Sans %s%d", fontbold?"bold ":"", fontsize);
+#if USE_GTK2
 	vte_terminal_set_font_from_string_full(VTE_TERMINAL(term),
 		buf, fontalias?VTE_ANTI_ALIAS_FORCE_DISABLE:0);
+#endif
 	return newsize;
 }
 
@@ -498,10 +502,12 @@ int main(int argc, char **argv, char **envp)
 	setenv("BEP", "entry", 1); // force debugger to stop at entry point
 	if (command) {
 		char *arg[2] = { command, NULL};
+#if USE_GTK2
 		vte_terminal_fork_command(
 				VTE_TERMINAL(term),
 				command, arg, envp, ".",
 				FALSE, FALSE, FALSE);
+#endif
 	} else {
 		if (filename) {
 #if 0
@@ -517,17 +523,21 @@ int main(int argc, char **argv, char **envp)
 			const char *arg[6] = { GRSCDIR"/Shell", filename, NULL};
 			sprintf(str, "gradare: %s", filename);
 			gtk_window_set_title(GTK_WINDOW(w), str);
+#if USE_GTK2
 			vte_terminal_fork_command(
 					VTE_TERMINAL(term),
 					GRSCDIR"/Shell", (char **)arg, envp, ".",
 					FALSE, FALSE, FALSE);
+#endif
 		} else {
 			sprintf(str, "gradare: (no file)");
 			gtk_window_set_title(GTK_WINDOW(w), str);
+#if USE_GTK2
 			vte_terminal_fork_command(
 					VTE_TERMINAL(term),
 					GRSCDIR"/Shell", NULL, envp, ".",
 					FALSE, FALSE, FALSE);
+#endif
 		}
 	}
 

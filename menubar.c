@@ -96,7 +96,9 @@ void gradare_about() //GtkAction *action, CanoeWindow *w)
 //printf("WindowPath: %s\n", w->path);
 
         gad = (GtkAboutDialog *) gtk_about_dialog_new();
+#if USE_GTK2
         gtk_about_dialog_set_name(gad, "Gradare");
+#endif
         gtk_window_set_position(GTK_WINDOW(gad), GTK_WIN_POS_CENTER);
         gtk_about_dialog_set_authors(gad,authors);
         gtk_about_dialog_set_copyright(gad,authors[2]);
@@ -261,6 +263,7 @@ static GtkActionEntry entries[] = {
 };
 static guint n_entries = G_N_ELEMENTS (entries);
 
+#if USE_GTK2
 GtkMenu *gradare_menubar_hildon_new(GtkWindow *w)
 {
 	GtkMenuItem *mi;
@@ -308,6 +311,7 @@ GtkMenu *gradare_menubar_hildon_new(GtkWindow *w)
 
 	return menu;
 }
+#endif
 
 GtkWidget *gradare_menubar_new(GtkWindow *w)
 {

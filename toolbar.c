@@ -121,7 +121,9 @@ void gradare_open_process()
 	hbb = gtk_hbutton_box_new();
 		gtk_container_set_border_width(GTK_CONTAINER(hbb), 5);
 		gtk_button_box_set_layout(GTK_BUTTON_BOX(hbb), GTK_BUTTONBOX_END);
+#if USE_GTK2
 		gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbb), 5);
+#endif
 		ok = gtk_button_new_from_stock(GTK_STOCK_OK);
 		cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 
@@ -215,10 +217,12 @@ void gradare_shell(const char **cmd)
 	gtk_window_set_title(GTK_WINDOW(w), "radare manpage");
 	vte = vte_terminal_new();
 	gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(vte));
+#if USE_GTK2
 	vte_terminal_fork_command(
 		VTE_TERMINAL(vte),
 		cmd[0], (char **)cmd, NULL, ".",
 		FALSE, FALSE, FALSE);
+#endif
 	gtk_widget_show_all(GTK_WIDGET(w));
 }
 
@@ -264,9 +268,11 @@ void gradare_refresh()
 	GList *list = gtk_container_get_children(GTK_CONTAINER(tool));
 
 	g_list_foreach(list, (GFunc)gtk_widget_destroy, NULL);
+#if USE_GTK2
 	gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 0);
 	gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 1);
 	gtk_toolbar_remove_space(GTK_TOOLBAR(tool), 2);
+#endif
 
 	tool = gradare_toolbar_new(tool);
 	vte_terminal_feed_child(VTE_TERMINAL(term), "Q\nV\n", 4);
@@ -289,7 +295,11 @@ void toggle_toolbar()
 			GTK_ICON_SIZE_SMALL_TOOLBAR);
 		break;
 	case 2:
+#if USE_GTK2
 		gtk_widget_hide_all(tool);
+#else
+		gtk_widget_hide(tool);
+#endif
 		v=-1;
 		break;
 	}
@@ -368,9 +378,13 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 	char buf[1024];
 	GtkWidget *toolbar = base;
 
-	if (toolbar == NULL)
+	if (toolbar == NULL) {
 		toolbar = gtk_toolbar_new();
-	else	gtk_toolbar_remove_space(GTK_TOOLBAR(toolbar), 0);
+	} else {
+#if USE_GTK2
+		gtk_toolbar_remove_space(GTK_TOOLBAR(toolbar), 0);
+#endif
+	}
 
 	/* set defaults */
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
@@ -398,9 +412,9 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 		GTK_TOOLBAR(toolbar), "Attach", "Attach process", "",
 		gtk_image_new_from_stock("gtk-properties", GTK_ICON_SIZE_MENU),
 		GTK_SIGNAL_FUNC(gradare_open_process), NULL);
-
+#if USE_GTK2
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
-
+#endif
 	gtk_toolbar_append_item(
 		GTK_TOOLBAR(toolbar), "Undo seek", "Undo", "",
 		gtk_image_new_from_stock("gtk-undo", GTK_ICON_SIZE_MENU),
@@ -409,9 +423,9 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 		GTK_TOOLBAR(toolbar), "Redo seek", "Redo", "",
 		gtk_image_new_from_stock("gtk-redo", GTK_ICON_SIZE_MENU),
 		GTK_SIGNAL_FUNC(gradare_redo), NULL);
-
+#if USE_GTK2
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
-
+#endif
 	gtk_toolbar_append_item(
 		GTK_TOOLBAR(toolbar), "Refresh toolbar", "Refresh", "",
 		gtk_image_new_from_stock("gtk-refresh", GTK_ICON_SIZE_MENU),
@@ -426,9 +440,9 @@ GtkWidget *gradare_toolbar_new(GtkWidget *base)
 		gtk_image_new_from_stock("gtk-help", GTK_ICON_SIZE_MENU),
 		GTK_SIGNAL_FUNC(gradare_help), NULL);
 #endif
-
+#if USE_GTK2
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
-
+#endif
 	/* append user-defined buttons */
 	strcpy(buf, g_get_home_dir());
 	strcat(buf, "/.radare/toolbar");
