@@ -6,8 +6,15 @@ CFLAGS+=-DPREFIX=\"${PREFIX}\" -DGRSCDIR=\"./grsc/\"
 #\"${DATADIR}/radare/gradare\"
 CFLAGS+=${GTK_FLAGS} ${VTE_FLAGS}
 CFLAGS+=-DVERSION=\"0.1\"
-GTK_FLAGS=`pkg-config glib-2.0 gtk+-2.0 vte --cflags`
-GTK_LIBS=`pkg-config glib-2.0 gtk+-2.0 vte --libs`
+USE_GTK2=0
+CFLAGS+=-DUSE_GTK2=$(USE_GTK2)
+ifeq ($(USE_GTK2),1)
+GTK_FLAGS=`pkg-config glib-2.0 gtk+-2.0 vte-2.91 --cflags`
+GTK_LIBS=`pkg-config glib-2.0 gtk+-2.0 vte-2.91 --libs`
+else
+GTK_FLAGS=`pkg-config glib-2.0 gtk+-3.0 vte-2.91 --cflags`
+GTK_LIBS=`pkg-config glib-2.0 gtk+-3.0 vte-2.91 --libs`
+endif
 LIBS+=${GTK_LIBS} ${VTE_LIBS}
 GRDIR=${DESTDIR}/${DATADIR}/gradare2/
 

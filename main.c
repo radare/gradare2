@@ -28,8 +28,14 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#define USE_GTK2 0
+
 //#define FONT "-adobe-courier-bold-o-normal--18-180-75-75-m-110-iso8859-15"
 #define FONT "Sans Bold 8"
+
+#ifndef VTE_ANTI_ALIAS_FORCE_DISABLE
+#define VTE_ANTI_ALIAS_FORCE_DISABLE 0
+#endif
 
 int fontsize=8;
 static char *font = FONT;
@@ -302,7 +308,9 @@ void gradare_new_monitor()
 	mon->id = mon_id++;
 
 	w = (GtkWindow *)GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+#if USE_GTK2
 	w->allow_shrink = TRUE;
+#endif
 	gtk_window_resize (GTK_WINDOW(w), 600, 400);
 	gtk_window_set_title (GTK_WINDOW(w), "gradare monitor");
 	// XXX memleak !!! should be passed to a destroyer function for 'mon'
@@ -378,6 +386,7 @@ gboolean key_press_cb(GtkWidget * widget, GdkEventKey * event, GtkWindow * windo
 			//hildon_banner_show_information(GTK_WIDGET(window), NULL, "Navigation Key select");
 			return TRUE;
 #endif
+#if USE_GTK2
 		case GDK_F6:
 			toggle_fullscreen();
 			return TRUE;
@@ -397,6 +406,7 @@ gboolean key_press_cb(GtkWidget * widget, GdkEventKey * event, GtkWindow * windo
 			//gtk_window_unfullscreen(window);
 			gtk_widget_grab_focus(term);
 			return TRUE;
+#endif
 	}
 
 	return FALSE;
@@ -456,7 +466,9 @@ int main(int argc, char **argv, char **envp)
 
 	g_set_application_name ("gradare");
 	w = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+#if USE_GTK2
 	w->allow_shrink = TRUE;
+#endif
 	g_signal_connect(G_OBJECT(w), "key_press_event", G_CALLBACK(key_press_cb), w);
 
 	gtk_window_resize(GTK_WINDOW(w), 800,600);

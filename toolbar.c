@@ -208,7 +208,9 @@ void gradare_shell(const char **cmd)
 {
 	GtkWidget *vte;
 	GtkWindow *w = GTK_WINDOW ( gtk_window_new(GTK_WINDOW_TOPLEVEL) );
-	w->allow_shrink=TRUE;
+#if USE_GTK2
+	w->allow_shrink = TRUE;
+#endif
 	gtk_window_resize(GTK_WINDOW(w), 600,400);
 	gtk_window_set_title(GTK_WINDOW(w), "radare manpage");
 	vte = vte_terminal_new();
