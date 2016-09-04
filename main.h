@@ -17,6 +17,10 @@ extern GtkWidget *catact;
 extern char *filename;
 extern int is_debugger;
 
+#if !USE_GTK2
+#define GTK_SIGNAL_FUNC(x) x
+#endif
+
 void gradare_new();
 int execute_command(char *cmd);
 GtkWidget *gradare_actions_new();

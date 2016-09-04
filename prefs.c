@@ -133,8 +133,9 @@ void prefs_open()
 	hbbox = gtk_hbutton_box_new();
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 5);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
+#if USE_GTK2
 	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbbox), 5);
-
+#endif
 	cancel = gtk_button_new_from_stock("gtk-cancel");
 	g_signal_connect(cancel, "button-release-event",
 		(gpointer)prefs_close, (gpointer)NULL);

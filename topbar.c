@@ -81,10 +81,14 @@ void commandline_activated(GtkEntry *entry, gpointer  user_data)
 	const char *cmd = gtk_entry_get_text(entry);
 	int len = strlen(cmd);
 
+#if USE_GTK2
 	gtk_entry_select_region(entry, 0, len);
 	buf = (char *)malloc(len+5);
 	snprintf(buf, len+4, ":%s\n\n", cmd);
 	core_cmd(buf);
+#else
+	fprintf (stderr, "TODO\n");
+#endif
 }
 
 GtkWidget *gradare_topbar_new()
@@ -102,6 +106,7 @@ GtkWidget *gradare_topbar_new()
 	g_signal_connect(entry, "activate", G_CALLBACK(commandline_activated), 0);
 
 	/* add arch combo box */
+#if USE_GTK2
 	combo = gtk_combo_box_new_text();
 	//gtk_combo_set_use_arrows( GTK_COMBO(combo),1);
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 0, "hexadecimal");
@@ -113,6 +118,9 @@ GtkWidget *gradare_topbar_new()
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 6, "string");
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 7, "hex pairs");
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), 8, "raw");
+#else
+	combo = gtk_combo_box_new ();
+#endif
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 
@@ -120,6 +128,7 @@ GtkWidget *gradare_topbar_new()
 	gtk_box_pack_end(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
 
 	/* add arch combo box */
+#if USE_GTK2
 	arch = gtk_combo_box_new_text();
 	//gtk_combo_set_use_arrows( GTK_COMBO_BOX(arch),1);
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 0, "intel16");
@@ -133,6 +142,9 @@ GtkWidget *gradare_topbar_new()
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 8, "csr");
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 9, "sparc");
 	gtk_combo_box_insert_text(GTK_COMBO_BOX(arch), 10, "8051");
+#else
+	arch = gtk_combo_box_new ();
+#endif
 #if _MAEMO_
 	gtk_combo_box_set_active(GTK_COMBO_BOX(arch), 3);
 #else
